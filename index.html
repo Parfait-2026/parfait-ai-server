@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>最強スイーツアンテナ Dream Perfect V61.4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --main-pink: #ff8fa3; --bg-color: #fffafb; }
+        body { font-family: 'Zen Maru Gothic', sans-serif; background-color: var(--bg-color); color: #4a3a3a; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes parfait-bounce {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); }
+            80% { transform: scale(0.9) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        @keyframes title-pop {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes shine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .parfait-pop { animation: parfait-bounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .title-animate { 
+            animation: title-pop 0.8s ease-out 0.3s forwards; 
+            opacity: 0;
+            background: linear-gradient(90deg, #ff8fa3, #ffb3c1, #ff8fa3);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: title-pop 0.8s ease-out 0.3s forwards, shine 3s linear infinite 1.5s;
+        }
+
+        .action-btn-bg { background-color: #ffeef2; border-radius: 9999px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 8px rgba(255, 143, 163, 0.15); border: 2px solid white; cursor: pointer; position: relative; }
+        .heart-inactive { color: #ffb3c1; fill: none; stroke: currentColor; stroke-width: 2.5px; transition: transform 0.2s; }
+        .heart-active { color: var(--main-pink) !important; fill: var(--main-pink) !important; animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes heart-pop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+
+        .slide-out-right { transform: translateX(100%); opacity: 0 !important; filter: brightness(1.5); pointer-events: none; }
+        
+        .mode-tab-sticky { position: sticky; top: 0; background: rgba(255, 250, 251, 0.85); backdrop-filter: blur(10px); z-index: 50; padding: 12px 0; }
+        .cat-tab { padding: 8px 16px; font-size: 11px; font-weight: 900; border-radius: 9999px; transition: all 0.3s; border: 2px solid transparent; }
+        .cat-tab-active { background: white; color: #ff8fa3; border-color: #ff8fa3; box-shadow: 0 4px 10px rgba(255, 143, 163, 0.1); }
+        .cat-tab-inactive { color: #d1d5db; background: transparent; }
+
+        .filter-select { appearance: none; background: white; border: 1px solid #ffeef2; padding: 8px 32px 8px 12px; border-radius: 14px; font-size: 11px; font-weight: 900; color: #ff8fa3; outline: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff8fa3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px; }
+
+        .hyokkori-container { position: fixed; bottom: 100px; right: -120px; z-index: 1000; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .hyokkori-container.active { right: -10px; }
+        .parfait-img { width: 100px; height: 100px; border-radius: 50% 0 0 50%; border: 4px solid white; box-shadow: -4px 4px 15px rgba(255,143,163,0.3); background: white; object-fit: cover; }
+        
+        .floating-char { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+
+        .tag-cat { font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.05); }
+        .tag-cat-custom { background: #fef9c3; color: #854d0e; }
+        .tag-cat-news { background: #dcfce7; color: #166534; }
+        .tag-cat-blog { background: #ffedd5; color: #9a3412; }
+        .tag-cat-reserve { background: #e0f2fe; color: #075985; }
+        
+        .drag-handle { cursor: grab; padding: 4px; color: #d1d5db; transition: color 0.2s; }
+        .drag-handle:active { cursor: grabbing; color: #ff8fa3; }
+        .sortable-ghost { opacity: 0.3; background: #ffeef2 !important; border: 2px dashed #ff8fa3 !important; }
+
+        .search-inner-tag { background: #fff1f2; color: #ff8fa3; font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: 10px; border: 1px solid #ffccd5; white-space: nowrap; margin-left: 4px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <!-- ひょっこりパルフェ -->
+    <div id="parfait-hyokkori" class="hyokkori-container" onclick="parfaitTalk()">
+        <div id="parfait-bubble" class="absolute bottom-[110px] right-[20px] bg-white border-2 border-[#ff8fa3] rounded-[20px] p-3 w-[180px] text-[11px] font-black text-[#ff8fa3] opacity-0 scale-75 transition-all pointer-events-none shadow-lg">いいスイーツは見つかったかな？ふわふわ〜♪</div>
+        <img src="https://images.unsplash.com/photo-1599408162489-0505efe3c532?q=80&w=200&auto=format&fit=crop" class="parfait-img" alt="パルフェ">
+    </div>
+
+    <!-- 検索画面 -->
+    <div id="search-modal" class="fixed inset-0 hidden p-6 flex flex-col bg-white z-[100] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6 shrink-0">
+            <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1599408162489-0505efe3c532?q=80&w=200&auto=format&fit=crop" class="w-10 h-10 rounded-full border-2 border-pink-200" alt="パルフェ">
+                <h2 class="font-black text-2xl text-pink-400 italic">Sweet Search</h2>
+            </div>
+            <button onclick="closeSearch()" class="w-10 h-10 flex items-center justify-center bg-gray-50 rounded-full text-gray-400 active:scale-90">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
+                <button onclick="updateSearchMode('sweets')" id="search-tab-sweets" class="flex-1 py-2 text-[11px] font-black rounded-xl transition-all bg-white text-pink-400 shadow-sm">🍰 スイーツ</button>
+                <button onclick="updateSearchMode('buffet')" id="search-tab-buffet" class="flex-1 py-2 text-[11px] font-black rounded-xl transition-all text-gray-400">🍽️ ビュッフェ</button>
+            </div>
+
+            <div class="flex gap-2">
+                <div class="flex-grow h-14 bg-white border-2 border-pink-50 rounded-[1.8rem] px-3 flex items-center shadow-inner overflow-hidden">
+                    <input type="text" id="search-input" placeholder="店名やキーワード..." class="w-full bg-transparent outline-none font-bold text-sm text-gray-600 px-1" oninput="updateSearchFavIcon()">
+                    <span id="search-fixed-tag" class="search-inner-tag shrink-0"># スイーツ</span>
+                </div>
+                <button onclick="toggleCustomFavorite()" class="shrink-0 action-btn-bg !w-14 !h-14">
+                    <svg id="search-fav-icon" class="h-6 w-6 heart-inactive" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
+            </div>
+
+            <div class="py-1">
+                <h3 class="text-[9px] font-black text-pink-300 mb-2 ml-2 uppercase tracking-wider">💖 Hot Keywords</h3>
+                <div id="hot-keywords-container" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex gap-2 w-full">
+                    <button onclick="consultParfait()" id="parfait-consult-btn" class="flex-1 bg-white border-2 border-pink-100 text-pink-400 py-4 rounded-[1.5rem] text-[11px] font-black shadow-sm active:scale-95 flex items-center justify-center gap-1">パルフェに相談 🪄</button>
+                    <button onclick="executeNormalSearch()" class="flex-1 bg-pink-400 text-white py-4 rounded-[1.5rem] text-[11px] font-black shadow-lg shadow-pink-100 active:scale-95 flex items-center justify-center gap-1">Googleで探す 🔍</button>
+                </div>
+                
+                <div id="parfait-answer-area" class="hidden animate-fade-in bg-pink-50/50 p-4 rounded-[1.5rem] border border-white space-y-2">
+                    <p id="parfait-answer-text" class="text-[11px] font-black text-gray-600 leading-relaxed line-clamp-3"></p>
+                    <button id="parfait-more-btn" onclick="toggleAnswerExpand()" class="text-[9px] font-black text-pink-400 flex items-center gap-1">もっと見る ▼</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="pt-12 pb-6 px-6 flex flex-col items-center gap-4">
+        <div class="relative parfait-pop">
+            <div class="absolute -inset-4 bg-pink-100 rounded-full blur-xl opacity-40 animate-pulse"></div>
+            <img id="opening-parfait" src="https://images.unsplash.com/photo-1599408162489-0505efe3c532?q=80&w=200&auto=format&fit=crop" class="w-24 h-24 rounded-full border-4 border-white shadow-2xl floating-char relative z-10" alt="パルフェ">
+            <div class="absolute -top-1 -right-1 bg-white p-1.5 rounded-full shadow-lg z-20 animate-bounce">🪄</div>
+        </div>
+        <div class="text-center">
+            <h1 class="text-3xl font-black title-animate tracking-tighter italic">🍭 Sweets Antenna 🎀</h1>
+            <p class="text-[10px] font-black text-pink-300 mt-1 tracking-widest opacity-80">Dream Perfect Edition</p>
+        </div>
+    </header>
+
+    <!-- Main Tabs -->
+    <div class="mode-tab-sticky px-6">
+        <div class="bg-gray-100/50 p-1.5 rounded-full flex gap-1 relative w-full max-w-[400px] mx-auto border border-white">
+            <div id="mode-glider" class="absolute top-1.5 left-1.5 h-[calc(100%-12px)] w-[calc(50%-6px)] bg-white rounded-full shadow-sm transition-transform duration-500 ease-out"></div>
+            <button onclick="updateMode('sweets')" class="flex-1 py-3 text-[12px] font-black z-10 relative" id="btn-sweets">🍰 最新スイーツ</button>
+            <button onclick="updateMode('buffet')" class="flex-1 py-3 text-[12px] font-black z-10 relative" id="btn-buffet">🍽️ ビュッフェ</button>
+        </div>
+    </div>
+
+    <div id="home-cat-tabs" class="px-6 mt-4 overflow-x-auto whitespace-nowrap no-scrollbar flex gap-2 py-2">
+        <button onclick="updateCategory('all')" class="cat-tab cat-tab-active" data-cat="all">ALL</button>
+        <button onclick="updateCategory('news')" class="cat-tab cat-tab-inactive" data-cat="news">📰 ニュース</button>
+        <button onclick="updateCategory('blog')" class="cat-tab cat-tab-inactive" data-cat="blog">✍️ ブログ</button>
+        <button onclick="updateCategory('sns')" class="cat-tab cat-tab-inactive" data-cat="sns">📸 SNS</button>
+        <button onclick="updateCategory('reserve')" class="cat-tab cat-tab-inactive" data-cat="reserve">💎 予約</button>
+    </div>
+
+    <main class="px-6 space-y-10 mt-4" id="main-view">
+        <div id="view-home" class="space-y-10">
+            <section id="trend-report-section">
+                <div class="p-6 bg-gradient-to-br from-pink-50 to-white rounded-[2.5rem] border-2 border-white shadow-xl shadow-pink-100/20">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-black text-sm text-pink-400 flex items-center gap-2">🍰 パルフェの気まぐれレポ</h2>
+                        <button onclick="generateTrendReport()" class="w-8 h-8 flex items-center justify-center bg-white border border-pink-100 rounded-full text-pink-300 active:rotate-180 transition-transform shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        </button>
+                    </div>
+                    <div id="trend-report-content" class="space-y-4">
+                        <p class="text-[11px] font-black text-gray-500 leading-relaxed italic">今日はどんなスイーツに出会えるかな？ワクワク〜♪🍭</p>
+                    </div>
+                    <div id="trend-report-tags" class="mt-4 flex flex-wrap gap-2"></div>
+                </div>
+            </section>
+
+            <section id="trend-section">
+                <h2 class="font-black text-xl mb-4">✨ Next Trend</h2>
+                <div id="trend-container" class="space-y-4"></div>
+            </section>
+
+            <section id="ai-tool-section" class="space-y-4">
+                <h2 class="font-black text-xl flex items-center gap-2">✨ 食レポ作成サポート</h2>
+                <div class="p-5 bg-white border-2 border-pink-100 rounded-[2.5rem] shadow-sm space-y-4">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] font-black text-pink-300 italic shrink-0">素敵なレポ作りをお手伝いします！</span>
+                        <div class="flex bg-gray-50 p-1 rounded-full border border-gray-100 scale-90 origin-right overflow-hidden min-w-[120px]">
+                            <button id="tone-parfait" onclick="updateTone('parfait')" class="flex-1 px-3 py-1.5 text-[9px] font-black rounded-full bg-pink-400 text-white transition-all whitespace-nowrap text-center">パルフェ風</button>
+                            <button id="tone-normal" onclick="updateTone('normal')" class="flex-1 px-3 py-1.5 text-[9px] font-black rounded-full text-gray-400 transition-all whitespace-nowrap text-center">通常</button>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="tool-input" placeholder="商品名や店名を入力してください♪" class="w-full bg-gray-50 border-2 border-transparent focus:border-pink-200 outline-none rounded-2xl px-4 py-3 text-xs font-black transition-all">
+                        <button onclick="generateReportFromTool()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-400 text-white w-8 h-8 rounded-xl flex items-center justify-center shadow-lg active:scale-90">🪄</button>
+                    </div>
+                    <div id="tool-response-area" class="hidden animate-fade-in p-4 bg-pink-50/50 rounded-2xl border border-white">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[8px] font-black text-pink-300">🎀 作成したレポート案</span>
+                            <button onclick="copyToolReport()" class="text-[8px] font-black text-white bg-pink-300 px-3 py-1 rounded-full">コピーする♪ 📋</button>
+                        </div>
+                        <p id="tool-response-text" class="text-[11px] font-black text-gray-600 leading-relaxed"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="blog-list-section" class="space-y-4">
+                <h2 class="font-black text-xl flex items-center gap-2">✍️ New Blog</h2>
+                <div id="blog-container" class="space-y-4">
+                    <div class="p-8 text-center text-[10px] font-black text-pink-200 animate-pulse italic">最新記事を探しています...🍬</div>
+                </div>
+            </section>
+
+            <section id="links-section">
+                <h2 class="font-black text-xl mb-4">🔗 Links</h2>
+                <div id="links-container" class="space-y-4"></div>
+            </section>
+        </div>
+
+        <div id="view-fav" class="hidden space-y-6">
+            <h2 class="font-black text-2xl text-pink-400 italic">Favorites 💝</h2>
+            <div class="bg-white/70 p-4 rounded-3xl border border-pink-50 shadow-sm space-y-3">
+                <div class="grid grid-cols-1 gap-2">
+                    <div class="flex items-center gap-2"><span class="text-[9px] font-black text-pink-300 w-12 shrink-0">カテゴリ</span><select id="fav-cat-filter" onchange="renderFavorites()" class="filter-select w-full"><option value="all">すべて表示</option><option value="custom">⭐️ カスタム</option><option value="news">📰 ニュース</option><option value="blog">✍️ ブログ</option><option value="sns">📸 SNS</option><option value="reserve">💎 予約</option></select></div>
+                    <div class="flex items-center gap-2"><span class="text-[9px] font-black text-pink-300 w-12 shrink-0">ジャンル</span><select id="fav-filter-mode" onchange="renderFavorites()" class="filter-select w-full"><option value="all">🍰 & 🍽️ 両方</option><option value="sweets">🍰 スイーツ</option><option value="buffet">🍽️ ビュッフェ</option></select></div>
+                    <div class="flex items-center gap-2"><span class="text-[9px] font-black text-pink-300 w-12 shrink-0">ならびかえ</span><select id="fav-sort-filter" onchange="renderFavorites()" class="filter-select w-full"><option value="custom">︙ 自由並び替え</option><option value="new">🆕 新しい順</option><option value="old">⏳ 古い順</option><option value="name">ABC 名前順</option></select></div>
+                </div>
+                <p id="sort-note" class="text-[9px] font-black text-pink-300 text-center bg-pink-50/50 py-1.5 rounded-lg border border-white">自由並び替え時はドラッグ＆ドロップで並び替えできます🎀</p>
+            </div>
+            <div id="favorites-container" class="space-y-4 pb-10 min-h-[100px]"></div>
+            <div id="fav-empty-msg" class="hidden flex flex-col items-center justify-center py-16 gap-6 text-center">
+                <img src="https://images.unsplash.com/photo-1599408162489-0505efe3c532?q=80&w=200&auto=format&fit=crop" class="w-32 h-32 rounded-full border-4 border-pink-50 opacity-60" alt="空">
+                <p class="text-sm font-black text-gray-300">お気に入りはまだありません🍭</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="notification-toast" class="fixed bottom-28 left-4 right-4 bg-white border-2 border-pink-100 p-4 rounded-[2rem] shadow-2xl z-[3000] opacity-0 pointer-events-none translate-y-full flex flex-col items-center justify-center gap-2 transition-all duration-500 ease-out">
+        <div id="notification-message" class="text-[12px] font-black text-gray-700 text-center flex items-center gap-1"></div>
+        <button id="undo-btn" onclick="undoAction()" class="hidden text-[10px] font-black text-white bg-pink-400 px-6 py-2 rounded-full active:scale-95 shadow-md">元に戻す♪ 🪄</button>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-pink-50 px-10 py-6 flex justify-between items-center z-[80] shadow-2xl rounded-t-[3rem]">
+        <button onclick="switchView('home')" id="nav-home" class="flex flex-col items-center gap-1.5 text-pink-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="text-[10px] font-black">Home</span>
+        </button>
+        <button onclick="openSearch()" class="flex flex-col items-center gap-1.5 text-gray-300">
+            <img src="https://images.unsplash.com/photo-1599408162489-0505efe3c532?q=80&w=200&auto=format&fit=crop" class="w-8 h-8 rounded-full border-2 border-gray-100" alt="パルフェ">
+            <span class="text-[10px] font-black">探す♪</span>
+        </button>
+        <button onclick="switchView('fav')" id="nav-fav" class="flex flex-col items-center gap-1.5 text-gray-300">
+            <div class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                <span id="fav-badge" class="absolute -top-1.5 -right-1.5 bg-pink-400 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center hidden font-black border-2 border-white">0</span>
+            </div>
+            <span class="text-[10px] font-black">Favs</span>
+        </button>
+    </nav>
+
+    <script>
+        const apiKey = "";
+        const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025";
+        const STORAGE_KEY = 'sweets_antenna_v61';
+
+        let currentMode = 'sweets';
+        let searchMode = 'sweets';
+        let activeCategory = 'all';
+        let reportTone = 'parfait';
+        let favorites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let lastRemoved = null;
+        let toastTimeout;
+        let currentTrends = [];
+        let sortableInstance = null;
+
+        const parfaitMessages = [
+            "おいしいスイーツは見つかったかな？とろ〜ん♪🎀",
+            "今日は甘いものを食べちゃうのかな？ふわふわ〜♪🧁",
+            "パフェが食べたい気分だよ♪サクサク〜♪🪄",
+            "キラキラのスイーツ、大好きだよ♪ピカピカ〜♪✨",
+            "あま〜い香りがしてきたね♪くんくん♪🍬",
+            "おすすめを教えてあげるね♪とろとろ〜♪💖",
+            "ビュッフェでたくさん食べちゃおう♪モグモグ♪🍽️",
+            "スイーツは心の栄養だよ♪あまあま〜♪🍰",
+            "パルフェと一緒に探そう？ねぇねぇ♪🎀"
+        ];
+
+        const linksData = [
+            { id: 'ozmall', title: "OZmall", desc: "贅沢なアフタヌーンティー予約に最適です。", icon: "💎", cat: "reserve", sweetsUrl: "https://www.ozmall.co.jp/restaurant/sweets/", buffetUrl: "https://www.ozmall.co.jp/restaurant/buffet/" },
+            { id: 'fashion', title: "Fashion Press", desc: "新作のスイーツニュースを網羅しています。", icon: "📰", cat: "news", sweetsUrl: "https://www.fashion-press.net/news/search/sweets", buffetUrl: "https://www.fashion-press.net/news/search/buffet" },
+            { id: 'ig', title: "Instagram", desc: "最新のトレンドスイーツを写真で探せます。", icon: "📸", cat: "sns", sweetsUrl: "https://www.instagram.com/explore/tags/sweets/", buffetUrl: "https://www.instagram.com/explore/tags/buffet/" },
+            { id: 'tabelog', title: "食べログ", desc: "評価や口コミを確認するのに便利です。", icon: "🍽️", cat: "news", sweetsUrl: "https://tabelog.com/keywords/sweets/tokyo/", buffetUrl: "https://tabelog.com/keywords/buffet/tokyo/" }
+        ];
+
+        async function callGemini(prompt, isJson = true, useSearch = false, systemType = "normal") {
+            try {
+                let systemInstruction = "あなたは優秀なスイーツガイドです。丁寧で分かりやすい言葉を使ってください。";
+                if (systemType === "parfait") {
+                    systemInstruction = "あなたは「パルフェ」という名前のスイーツの妖精です。話し方は『〜だよ♪』『〜なの♪』のように甘く、擬音（とろ〜ん、ふわふわ、サクサク）を多用します。漢字も適切に混ぜて読みやすくしてください。";
+                }
+
+                const payload = { 
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] }
+                };
+                if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
+                if (useSearch) payload.tools = [{ "google_search": {} }];
+                
+                const res = await fetch(`https://parfait-ai-server.onrender.com/api/ai`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                const text = data.candidates[0].content.parts[0].text;
+                return isJson ? JSON.parse(text) : text;
+            } catch (e) { return null; }
+        }
+
+        async function renderBlogSection() {
+            const container = document.getElementById('blog-container');
+            if(!container) return;
+            container.innerHTML = `<div class="p-8 text-center text-[10px] font-black text-pink-200 animate-pulse italic">最新記事を探しています...🍬</div>`;
+            const prompt = `最新の「${currentMode === 'sweets' ? 'スイーツ・新作お菓子' : 'ホテルビュッフェ・食べ放題'}」に関する実際のブログ記事情報を3つ取得して。スキーマ: {"posts": [{"title": "タイトル", "excerpt": "概要", "url": "URL"}]}`;
+            const res = await callGemini(prompt, true, true, "normal");
+            if(res && res.posts) displayPosts(res.posts);
+            else container.innerHTML = `<div class="p-8 text-center text-[10px] font-black text-gray-300 italic">記事が見つかりませんでした。</div>`;
+        }
+
+        function displayPosts(posts) {
+            const container = document.getElementById('blog-container');
+            container.innerHTML = posts.map(post => `
+                <div class="glass-card p-5 rounded-[2rem] border-l-4 border-pink-300 cursor-pointer active:scale-[0.98] transition-transform" onclick="window.open('${post.url}', '_blank')">
+                    <h3 class="font-black text-sm text-gray-700 mb-1">${post.title}</h3>
+                    <p class="text-[10px] text-gray-400 font-bold leading-relaxed line-clamp-2">${post.excerpt}</p>
+                    <div class="flex justify-end mt-2"><span class="text-[8px] font-black text-pink-300">記事を読む ➔</span></div>
+                </div>
+            `).join('');
+        }
+
+        function parfaitTalk() {
+            const bubble = document.getElementById('parfait-bubble');
+            const msg = parfaitMessages[Math.floor(Math.random() * parfaitMessages.length)];
+            bubble.innerText = msg;
+            bubble.classList.add('opacity-100', 'scale-100');
+            setTimeout(() => bubble.classList.remove('opacity-100', 'scale-100'), 3000);
+        }
+
+        function updateTone(tone) {
+            reportTone = tone;
+            const pBtn = document.getElementById('tone-parfait');
+            const nBtn = document.getElementById('tone-normal');
+            pBtn.className = `flex-1 px-3 py-1.5 text-[9px] font-black rounded-full transition-all whitespace-nowrap text-center ${tone==='parfait'?'bg-pink-400 text-white':'text-gray-400'}`;
+            nBtn.className = `flex-1 px-3 py-1.5 text-[9px] font-black rounded-full transition-all whitespace-nowrap text-center ${tone==='normal'?'bg-pink-400 text-white':'text-gray-400'}`;
+        }
+
+        async function generateReportFromTool() {
+            const input = document.getElementById('tool-input').value.trim();
+            if(!input) return;
+            const area = document.getElementById('tool-response-area');
+            const text = document.getElementById('tool-response-text');
+            area.classList.remove('hidden');
+            text.innerText = "執筆しています...🪄";
+            const prompt = `「${input}」の食レポを150文字程度で書いてください。`;
+            const res = await callGemini(prompt, false, false, reportTone);
+            if(res) text.innerText = res;
+        }
+
+        function copyToolReport() {
+            const text = document.getElementById('tool-response-text').innerText;
+            const temp = document.createElement("textarea");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showNotification("レポート案をコピーしました♪");
+        }
+
+        async function consultParfait() {
+            const val = document.getElementById('search-input').value.trim();
+            const tag = document.getElementById('search-fixed-tag').innerText.replace('# ', '');
+            const query = val || tag;
+            const btn = document.getElementById('parfait-consult-btn');
+            const area = document.getElementById('parfait-answer-area');
+            const text = document.getElementById('parfait-answer-text');
+            const moreBtn = document.getElementById('parfait-more-btn');
+            btn.innerText = "考え中だよ...🪄";
+            area.classList.remove('hidden');
+            text.innerText = "うーん、ちょっと待っていてね♪ふわふわ〜";
+            const prompt = `「${query}」について具体的にアドバイスして。200文字程度。`;
+            const res = await callGemini(prompt, false, true, "parfait");
+            if(res) {
+                btn.innerText = "パルフェに相談 🪄";
+                text.innerText = res;
+                if(res.length > 60) moreBtn.classList.remove('hidden');
+            }
+        }
+
+        function toggleAnswerExpand() {
+            const text = document.getElementById('parfait-answer-text');
+            const moreBtn = document.getElementById('parfait-more-btn');
+            if(text.classList.contains('line-clamp-3')) {
+                text.classList.remove('line-clamp-3');
+                moreBtn.innerText = "閉じる ▲";
+            } else {
+                text.classList.add('line-clamp-3');
+                moreBtn.innerText = "もっと見る ▼";
+            }
+        }
+
+        function toggleCustomFavorite() {
+            const val = document.getElementById('search-input').value.trim();
+            const tag = document.getElementById('search-fixed-tag').innerText.replace('# ', '');
+            const title = val || tag;
+            const uId = `custom_${val}_${tag}`;
+            const idx = favorites.findIndex(f => f.uId === uId);
+            const icon = document.getElementById('search-fav-icon');
+            if(idx === -1) {
+                favorites.unshift({ uId, title, tag, mode: searchMode, cat: 'custom', icon: '⭐️', url: `https://www.google.com/search?q=${encodeURIComponent((val ? val + " " : "") + tag)}`, savedAt: Date.now() });
+                icon.classList.remove('heart-inactive'); icon.classList.add('heart-active');
+                showNotification("をお気に入りに追加しました♪", title);
+            } else {
+                lastRemoved = favorites[idx];
+                favorites.splice(idx, 1);
+                icon.classList.remove('heart-active'); icon.classList.add('heart-inactive');
+                showNotification("をお気に入りから削除しました。", title, true);
+            }
+            saveData();
+        }
+
+        function updateSearchFavIcon() {
+            const val = document.getElementById('search-input').value.trim();
+            const tag = document.getElementById('search-fixed-tag').innerText.replace('# ', '');
+            const uId = `custom_${val}_${tag}`;
+            const isFav = favorites.some(f => f.uId === uId);
+            const icon = document.getElementById('search-fav-icon');
+            if(isFav) { icon.classList.remove('heart-inactive'); icon.classList.add('heart-active'); }
+            else { icon.classList.remove('heart-active'); icon.classList.add('heart-inactive'); }
+        }
+
+        function executeNormalSearch() {
+            const val = document.getElementById('search-input').value.trim();
+            const tag = document.getElementById('search-fixed-tag').innerText.replace('# ', '');
+            window.open(`https://www.google.com/search?q=${encodeURIComponent((val ? val + " " : "") + tag)}`, '_blank');
+        }
+
+        function showNotification(suffixMsg, title = "", showUndo = false) {
+            const t = document.getElementById('notification-toast');
+            const msgEl = document.getElementById('notification-message');
+            const undoBtn = document.getElementById('undo-btn');
+            msgEl.innerHTML = title ? `<span class="truncate leading-none">『${title}』</span><span class="shrink-0 leading-none pl-1">${suffixMsg}</span>` : suffixMsg;
+            undoBtn.classList.toggle('hidden', !showUndo);
+            t.classList.remove('opacity-0', 'translate-y-full', 'pointer-events-none');
+            t.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            if(toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => hideToast(), 4000);
+        }
+
+        function hideToast() {
+            const t = document.getElementById('notification-toast');
+            t.classList.add('opacity-0', 'translate-y-full', 'pointer-events-none');
+            t.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        }
+
+        function undoAction() {
+            if(lastRemoved) {
+                favorites.unshift(lastRemoved);
+                const title = lastRemoved.title;
+                lastRemoved = null;
+                saveData(); renderFavorites(); renderLinks(); renderTrends();
+                hideToast();
+                showNotification("を元に戻しました♪", title);
+            }
+        }
+
+        function animateRemoveFavorite(uId) {
+            const card = document.getElementById(`fav-card-${uId}`);
+            if(!card) return;
+            card.classList.add('slide-out-right');
+            setTimeout(() => {
+                const idx = favorites.findIndex(f => f.uId === uId);
+                if(idx !== -1) {
+                    lastRemoved = favorites[idx];
+                    favorites.splice(idx, 1);
+                    saveData();
+                    renderFavorites();
+                    renderLinks();
+                    renderTrends();
+                    showNotification("をお気に入りから削除しました。", lastRemoved.title, true);
+                }
+            }, 400);
+        }
+
+        function initSortable() {
+            const container = document.getElementById('favorites-container');
+            const note = document.getElementById('sort-note');
+            if(!container) return;
+            if(sortableInstance) sortableInstance.destroy();
+            const isCustomSort = document.getElementById('fav-sort-filter').value === 'custom';
+            
+            if(isCustomSort) {
+                note.innerText = "自由並び替え時はドラッグ＆ドロップで並び替えできます🎀";
+                note.classList.add('text-pink-400');
+            } else {
+                note.innerText = "選択した順序で自動整列しています♪";
+                note.classList.remove('text-pink-400');
+            }
+
+            sortableInstance = new Sortable(container, {
+                animation: 150, handle: '.drag-handle', ghostClass: 'sortable-ghost',
+                disabled: !isCustomSort,
+                onEnd: () => {
+                    const newOrderIds = Array.from(container.querySelectorAll('.glass-card')).map(el => el.dataset.uid);
+                    favorites = newOrderIds.map(id => favorites.find(f => f.uId === id)).filter(Boolean);
+                    saveData();
+                }
+            });
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-container');
+            const emptyMsg = document.getElementById('fav-empty-msg');
+            const catF = document.getElementById('fav-cat-filter').value;
+            const modeF = document.getElementById('fav-filter-mode').value;
+            const sortF = document.getElementById('fav-sort-filter').value;
+            let list = [...favorites];
+            if(catF !== 'all') list = list.filter(f => f.cat === catF);
+            if(modeF !== 'all') list = list.filter(f => f.mode === modeF);
+            if(sortF === 'new') list.sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+            else if(sortF === 'old') list.sort((a, b) => (a.savedAt || 0) - (b.savedAt || 0));
+            else if(sortF === 'name') list.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
+            
+            if(list.length === 0) { container.innerHTML = ""; emptyMsg.classList.remove('hidden'); return; }
+            emptyMsg.classList.add('hidden');
+            
+            container.innerHTML = list.map(f => {
+                const savedDate = f.savedAt ? new Date(f.savedAt).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '---';
+                return `
+                <div data-uid="${f.uId}" id="fav-card-${f.uId}" class="glass-card p-4 rounded-[1.8rem] flex items-center gap-3 relative transition-all duration-500" onclick="window.open('${f.url}', '_blank')">
+                    <button onclick="event.stopPropagation(); animateRemoveFavorite('${f.uId}')" class="action-btn-bg !w-10 !h-10 shrink-0 z-30">
+                        <svg class="h-5 w-5 heart-active" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </button>
+                    <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-xl shrink-0 border border-white shadow-sm">${f.icon || '🍭'}</div>
+                    <div class="flex-grow min-w-0 px-1">
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <span class="type-tag ${f.mode==='sweets'?'text-pink-400 bg-pink-50':'text-blue-400 bg-blue-50'} px-1.5 py-0.5 rounded text-[8px] font-black uppercase">${f.mode}</span>
+                            <span class="tag-cat tag-cat-${f.cat}">${f.cat}</span>
+                        </div>
+                        <h3 class="font-black text-gray-700 text-[12px] truncate">${f.title}</h3>
+                        <p class="text-[8px] font-black text-pink-200 mt-1 italic tracking-tight">saved on ${savedDate}</p>
+                    </div>
+                    ${sortF === 'custom' ? `<div class="drag-handle shrink-0 ml-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M4 8h16M4 16h16"/></svg></div>` : ''}
+                </div>`;
+            }).join('');
+            initSortable();
+        }
+
+        async function generateTrendReport() {
+            const el = document.getElementById('trend-report-content');
+            const tags = document.getElementById('trend-report-tags');
+            el.innerHTML = "<p class='animate-pulse text-pink-200 text-xs font-black'>美味しいものを探してくるよ♪とろ〜ん♪🎀</p>";
+            const prompt = `今人気の「${currentMode}」関連の具体的な一品を可愛くレポしてください。JSON: {"report": "本文", "keywords": ["ワード1", "ワード2", "ワード3"]}`;
+            const res = await callGemini(prompt, true, false, "parfait");
+            if(res) {
+                el.innerHTML = `<p class="animate-fade-in text-[11px] font-black text-gray-600 leading-relaxed">${res.report}</p>`;
+                tags.innerHTML = res.keywords.map(k => `<button onclick="quickSearch('${k}')" class="px-3 py-1 bg-white border border-pink-100 text-pink-400 rounded-full text-[9px] font-black"># ${k} 🔍</button>`).join('');
+            }
+        }
+
+        function quickSearch(word) { window.open(`https://www.google.com/search?q=${encodeURIComponent(word + " " + (currentMode === 'sweets' ? 'スイーツ' : 'ビュッフェ'))}`, '_blank'); }
+
+        function updateMode(mode) {
+            currentMode = mode;
+            const glider = document.getElementById('mode-glider');
+            if(glider) glider.style.transform = mode === 'buffet' ? 'translateX(100%)' : 'translateX(0)';
+            fetchTrends(); renderLinks(); generateTrendReport(); renderBlogSection();
+        }
+
+        function updateCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('#home-cat-tabs .cat-tab').forEach(btn => btn.className = `cat-tab ${btn.dataset.cat === cat ? 'cat-tab-active' : 'cat-tab-inactive'}`);
+            renderLinks();
+            document.getElementById('trend-report-section').classList.remove('hidden');
+            const isAll = cat === 'all';
+            const isBlog = cat === 'blog';
+            document.getElementById('trend-section').classList.toggle('hidden', !isAll);
+            const showBlogTools = isAll || isBlog;
+            document.getElementById('ai-tool-section').classList.toggle('hidden', !showBlogTools);
+            document.getElementById('blog-list-section').classList.toggle('hidden', !showBlogTools);
+        }
+
+        function renderLinks() {
+            const container = document.getElementById('links-container');
+            const filtered = activeCategory === 'all' ? linksData : linksData.filter(l => l.cat === activeCategory);
+            container.innerHTML = filtered.map(link => {
+                const uId = `link_${currentMode}_${link.id}`;
+                const isFav = favorites.some(f => f.uId === uId);
+                return `<div class="glass-card p-5 rounded-[2rem] flex items-center gap-4 relative cursor-pointer" onclick="window.open('${currentMode==='buffet'?link.buffetUrl:link.sweetsUrl}', '_blank')">
+                    <div class="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-3xl shrink-0">${link.icon}</div>
+                    <div class="flex-grow min-w-0 pr-12">
+                        <h3 class="font-black text-gray-700 text-sm truncate">${link.title}</h3>
+                        <p class="text-[9px] text-gray-400 font-bold mt-0.5">${link.desc}</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); toggleFavoriteLink(${JSON.stringify(link).replace(/"/g, '&quot;')}, '${link.cat}')" class="absolute right-4 top-1/2 -translate-y-1/2 action-btn-bg z-20"><svg class="h-6 w-6 ${isFav ? 'heart-active' : 'heart-inactive'}" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleFavoriteLink(item, cat) {
+            const uId = `link_${currentMode}_${item.id}`;
+            const idx = favorites.findIndex(f => f.uId === uId);
+            if(idx === -1) {
+                favorites.unshift({ ...item, uId, cat, mode: currentMode, url: (currentMode==='buffet'?item.buffetUrl:item.sweetsUrl), savedAt: Date.now() });
+                showNotification("をお気に入りに追加しました♪", item.title);
+            } else {
+                lastRemoved = favorites[idx];
+                favorites.splice(idx, 1);
+                showNotification("をお気に入りから削除しました。", item.title, true);
+            }
+            saveData(); renderLinks();
+        }
+
+        async function fetchTrends() {
+            const res = await callGemini(`「${currentMode}」の最新トレンド3つを提案して。JSON: {"trends": [{"id":"t1","title": "名前", "desc": "説明", "emoji": "🍰"}]}`, true, true, "normal");
+            if(res) { currentTrends = res.trends; renderTrends(); }
+        }
+
+        function renderTrends() {
+            const container = document.getElementById('trend-container');
+            if(!container) return;
+            container.innerHTML = currentTrends.map(t => {
+                const uId = `trend_${currentMode}_${t.id}`;
+                const isFav = favorites.some(f => f.uId === uId);
+                return `<div class="glass-card p-4 rounded-[2rem] flex items-center justify-between gap-4 relative">
+                    <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-xl shrink-0">${t.emoji || '✨'}</div>
+                    <div class="flex-grow min-w-0 cursor-pointer" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(t.title)}', '_blank')">
+                        <h3 class="font-black text-sm text-gray-700 truncate">${t.title}</h3>
+                        <p class="text-[9px] text-gray-400 font-bold mt-0.5 line-clamp-1">${t.desc}</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); toggleTrendFavorite(${JSON.stringify(t).replace(/"/g, '&quot;')}, '${uId}')" class="action-btn-bg shrink-0"><svg class="h-5 w-5 ${isFav ? 'heart-active' : 'heart-inactive'}" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleTrendFavorite(t, uId) {
+            const idx = favorites.findIndex(f => f.uId === uId);
+            if(idx === -1) {
+                favorites.unshift({ uId, title: t.title, mode: currentMode, cat: 'news', icon: (t.emoji || '✨'), url: `https://www.google.com/search?q=${encodeURIComponent(t.title)}`, savedAt: Date.now() });
+                showNotification("をお気に入りに追加しました♪", t.title);
+            } else {
+                lastRemoved = favorites[idx];
+                favorites.splice(idx, 1);
+                showNotification("をお気に入りから削除しました。", t.title, true);
+            }
+            saveData(); renderTrends();
+        }
+
+        function refreshHotKeywords() {
+            const keywords = ["桃パフェ", "ヌン活", "抹茶ビュッフェ", "生ドーナツ", "カヌレ"];
+            document.getElementById('hot-keywords-container').innerHTML = keywords.map(k => `<button onclick="setKeyword('${k}')" class="px-3 py-1.5 bg-pink-50 text-pink-400 rounded-xl text-[10px] font-black"># ${k}</button>`).join('');
+        }
+
+        function setKeyword(word) { document.getElementById('search-input').value = word; updateSearchFavIcon(); }
+
+        function switchView(view) {
+            document.getElementById('view-home').classList.toggle('hidden', view !== 'home');
+            document.getElementById('view-fav').classList.toggle('hidden', view !== 'fav');
+            document.getElementById('nav-home').className = `flex flex-col items-center gap-1.5 ${view==='home'?'text-pink-400':'text-gray-300'}`;
+            document.getElementById('nav-fav').className = `flex flex-col items-center gap-1.5 ${view==='fav'?'text-pink-400':'text-gray-300'}`;
+            if(view === 'fav') renderFavorites();
+        }
+
+        function openSearch() { document.getElementById('search-modal').classList.remove('hidden'); refreshHotKeywords(); }
+        function closeSearch() { document.getElementById('search-modal').classList.add('hidden'); }
+
+        function saveData() { 
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites)); 
+            const b = document.getElementById('fav-badge');
+            if(b) { b.innerText = favorites.length; b.classList.toggle('hidden', favorites.length === 0); }
+        }
+
+        function updateSearchMode(mode) {
+            searchMode = mode;
+            const tabSweets = document.getElementById('search-tab-sweets');
+            const tabBuffet = document.getElementById('search-tab-buffet');
+            const fixedTag = document.getElementById('search-fixed-tag');
+
+            tabSweets.className = mode === 'sweets' ? "flex-1 py-2 text-[11px] font-black rounded-xl transition-all bg-white text-pink-400 shadow-sm" : "flex-1 py-2 text-[11px] font-black rounded-xl transition-all text-gray-400";
+            tabBuffet.className = mode === 'buffet' ? "flex-1 py-2 text-[11px] font-black rounded-xl transition-all bg-white text-pink-400 shadow-sm" : "flex-1 py-2 text-[11px] font-black rounded-xl transition-all text-gray-400";
+            
+            if(mode === 'buffet') {
+                const buffetKeywords = ["スイーツビュッフェ", "デザートビュッフェ", "ケーキ食べ放題", "ケーキバイキング"];
+                const chosen = buffetKeywords[Math.floor(Math.random() * buffetKeywords.length)];
+                fixedTag.innerText = "# " + chosen;
+            } else {
+                fixedTag.innerText = "# スイーツ";
+            }
+            updateSearchFavIcon();
+        }
+
+        window.onload = () => {
+            updateMode('sweets'); 
+            saveData();
+            setInterval(() => {
+                const el = document.getElementById('parfait-hyokkori');
+                if(Math.random() > 0.6) el?.classList.add('active'); else el?.classList.remove('active');
+            }, 8000);
+        };
+    </script>
+</body>
+</html>
